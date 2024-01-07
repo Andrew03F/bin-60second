@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Binary Numbers</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 50%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+let binaryColumnVisible = true;
+let decimalColumnVisible = true;
+let hexadecimalColumnVisible = true;
+
+function generateUniqueRandomBinary() {
+    const uniqueDecimalNumbersSection1 = Array.from({length: 5}, () => Math.floor(Math.random() * 32));
+    const uniqueDecimalNumbersSection2 = Array.from({length: 3}, () => 32 + Math.floor(Math.random() * 96));
+    const uniqueDecimalNumbersSection3 = Array.from({length: 2}, () => 128 + Math.floor(Math.random() * 128));
+
+    const uniqueDecimalNumbers = [...uniqueDecimalNumbersSection1, ...uniqueDecimalNumbersSection2, ...uniqueDecimalNumbersSection3]
+
+    // Create the table element
+    const table = document.createElement('table');
+    table.id = 'binaryTable';
+
+    // Create the header row
+    const headerRow = table.insertRow();
+    const binaryHeader = headerRow.insertCell(0);
+    binaryHeader.textContent = 'Binary';
+
+    const decimalHeader = headerRow.insertCell(1);
+    decimalHeader.textContent = 'Decimal';
+
+    const hexadecimalHeader = headerRow.insertCell(2);
+    hexadecimalHeader.textContent = 'Hexadecimal';
+
+    // Create the rows with data
+    uniqueDecimalNumbers.forEach(decimalNumber => {
+        const binaryNumber = decimalNumber.toString(2);
+        const hexadecimalNumber = decimalNumber.toString(16).toUpperCase(); // Convert to uppercase for consistency
+        const row = table.insertRow();
+        row.insertCell(0).textContent = binaryNumber.padEnd(8);
+        row.insertCell(1).textContent = decimalNumber;
+        row.insertCell(2).textContent = hexadecimalNumber;
+    });
+
+    // Remove existing table and buttons
+    const existingTable = document.getElementById('binaryTable');
+    if (existingTable) {
+        existingTable.remove();
+    }
+
+    const existingButtons = document.querySelectorAll('button');
+    existingButtons.forEach(button => button.remove());
+
+    // Append the new table to the body
+    document.body.appendChild(table);
+
+    // Create Refresh, Toggle Binary, Toggle Decimal, and Toggle Hexadecimal buttons
+    const refreshButton = document.createElement('button');
+    refreshButton.textContent = 'Refresh';
+    refreshButton.onclick = refreshTable;
+    document.body.appendChild(refreshButton);
+
+    const toggleBinaryButton = document.createElement('button');
+    toggleBinaryButton.textContent = 'Toggle Binary';
+    toggleBinaryButton.onclick = toggleBinaryColumn;
+    document.body.appendChild(toggleBinaryButton);
+
+    const toggleDecimalButton = document.createElement('button');
+    toggleDecimalButton.textContent = 'Toggle Decimal';
+    toggleDecimalButton.onclick = toggleDecimalColumn;
+    document.body.appendChild(toggleDecimalButton);
+
+    const toggleHexadecimalButton = document.createElement('button');
+    toggleHexadecimalButton.textContent = 'Toggle Hexadecimal';
+    toggleHexadecimalButton.onclick = toggleHexadecimalColumn;
+    document.body.appendChild(toggleHexadecimalButton);
+
+    // Set the visibility of columns based on the stored state
+    setColumnVisibility('Binary', binaryColumnVisible);
+    setColumnVisibility('Decimal', decimalColumnVisible);
+    setColumnVisibility('Hexadecimal', hexadecimalColumnVisible);
+}
+
+function refreshTable() {
+    // Store the current visibility state
+    binaryColumnVisible = isColumnVisible('Binary');
+    decimalColumnVisible = isColumnVisible('Decimal');
+    hexadecimalColumnVisible = isColumnVisible('Hexadecimal');
+
+    // Remove the existing table and buttons before generating a new table
+    const existingTable = document.getElementById('binaryTable');
+    if (existingTable) {
+        existingTable.remove();
+    }
+
+    const existingButtons = document.querySelectorAll('button');
+    existingButtons.forEach(button => button.remove());
+
+    generateUniqueRandomBinary();
+}
+
+function toggleBinaryColumn() {
+    // Toggle the visibility of the Binary column
+    binaryColumnVisible = !binaryColumnVisible;
+    setColumnVisibility('Binary', binaryColumnVisible);
+}
+
+function toggleDecimalColumn() {
+    // Toggle the visibility of the Decimal column
+    decimalColumnVisible = !decimalColumnVisible;
+    setColumnVisibility('Decimal', decimalColumnVisible);
+}
+
+function toggleHexadecimalColumn() {
+    // Toggle the visibility of the Hexadecimal column
+    hexadecimalColumnVisible = !hexadecimalColumnVisible;
+    setColumnVisibility('Hexadecimal', hexadecimalColumnVisible);
+}
+
+function setColumnVisibility(columnName, isVisible) {
+    // Set the visibility of the specified column
+    const table = document.getElementById('binaryTable');
+    const columnCells = Array.from(table.querySelectorAll(`td:nth-child(${columnName === 'Binary' ? 1 : (columnName === 'Decimal' ? 2 : 3)}), th:nth-child(${columnName === 'Binary' ? 1 : (columnName === 'Decimal' ? 2 : 3)})`));
+
+    columnCells.forEach(cell => {
+        cell.style.display = isVisible ? '' : 'none';
+    });
+}
+
+function isColumnVisible(columnName) {
+    // Check if the specified column is currently visible
+    const table = document.getElementById('binaryTable');
+    const columnCells = Array.from(table.querySelectorAll(`td:nth-child(${columnName === 'Binary' ? 1 : (columnName === 'Decimal' ? 2 : 3)}), th:nth-child(${columnName === 'Binary' ? 1 : (columnName === 'Decimal' ? 2 : 3)})`));
+
+    // Check visibility of the first cell in the column
+    return columnCells.length > 0 && columnCells[0].style.display !== 'none';
+}
+
+// Call the function to generate and display the initial table
+generateUniqueRandomBinary();
+</script>
+
+</body>
+</html>
